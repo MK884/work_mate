@@ -7,54 +7,32 @@ import Screen from '@components/Screen';
 import { Button } from '@components/ui/Button';
 import { paletts } from '@styles/paletts';
 import { typography } from '@styles/typography';
+import { AnimatedIn } from '@utils/animation';
+import { replace } from '@utils/navigation';
 import { scale } from '@utils/scale';
 import React from 'react';
 import {
-  StyleProp,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  ViewStyle
+  View
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Animated, {
+import {
   createAnimatedComponent,
-  FadeInLeft,
-  FadeInRight,
-  FadeInUp,
   useAnimatedStyle,
-  withTiming,
+  withTiming
 } from 'react-native-reanimated';
 
-type Props = {
-  children: React.ReactNode;
-  delay?: number;
-  from?: 'up' | 'left' | 'right';
-  style: StyleProp<ViewStyle>;
-};
-
-const AnimatedIn = ({ children, delay = 0, from = 'up', style }: Props) => {
-  const entering =
-    from === 'left'
-      ? FadeInLeft.delay(delay).springify()
-      : from === 'right'
-      ? FadeInRight.delay(delay).springify()
-      : FadeInUp.delay(delay).springify();
-
-  return (
-    <Animated.View entering={entering} style={style}>
-      {children}
-    </Animated.View>
-  );
-};
 
 const Splash = () => {
   const [activeScreenIndex, setActiveScreenIndex] = React.useState(0);
 
+  const skipOnBoardingScreens = () => replace('FinalScreen');
+
   const handleScreenChange = (index: number) => {
     if (index < 3) setActiveScreenIndex(index);
-    else setActiveScreenIndex(0);
+    else skipOnBoardingScreens()
   };
 
   const OnBoardScreen1 = () => {
@@ -210,6 +188,7 @@ const Splash = () => {
           variant="primaryGhost"
           size="lg"
           containerStyle={{ width: '100%' }}
+          onPress={skipOnBoardingScreens}
         />
       </View>
     </Screen>

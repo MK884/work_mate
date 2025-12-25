@@ -13,6 +13,7 @@ type RootStackParamList = {
   Profile: undefined;
   Messages:undefined;
   Notification: undefined;
+  FinalScreen: undefined;
   MainTab: { screen?: keyof MainTabParamList } | undefined;
 };
 

@@ -1,6 +1,15 @@
-import { paletts } from "@styles/paletts";
-import React, { forwardRef, useState } from "react";
-import { TextInput, View, Text, TextInputProps, TouchableOpacity } from "react-native";
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import { paletts } from '@styles/paletts';
+import { scale } from '@utils/scale';
+import React, { forwardRef, useState } from 'react';
+import {
+  TextInput,
+  View,
+  Text,
+  TextInputProps,
+  TouchableOpacity,
+  TextStyle,
+} from 'react-native';
 
 export interface InputProps extends TextInputProps {
   startElement?: React.ReactNode;
@@ -11,11 +20,15 @@ export interface InputProps extends TextInputProps {
   containerStyle?: any;
   inputStyle?: any;
   elementStyle?: any;
+  label?: string;
+  labelStyle?: TextStyle;
+  isRequired?: boolean;
   onStartPress?: () => void;
   onEndPress?: () => void;
+  useBottomSheetInput?: boolean;
 }
 
-export const AppTextInput = forwardRef<TextInput, InputProps>(
+export const AppTextInput = forwardRef<any, InputProps>(
   (
     {
       startElement,
@@ -28,24 +41,42 @@ export const AppTextInput = forwardRef<TextInput, InputProps>(
       elementStyle,
       onStartPress,
       onEndPress,
+      label,
+      labelStyle,
+      isRequired = false,
+      useBottomSheetInput = false,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const [focused, setFocused] = useState(false);
 
+    const InputComponent= useBottomSheetInput ? BottomSheetTextInput : TextInput;
+
     return (
-      <View style={[{ width: "100%" }, containerStyle]}>
+      <View style={[{ width: '100%', gap: scale(4) }, containerStyle]}>
+        {label && (
+          <Text style={[{ color: paletts.GRAY600 }, labelStyle]}>
+            {label}{' '}
+            {isRequired && <Text style={{ color: paletts.RED600 }}>*</Text>}
+          </Text>
+        )}
         <View
           style={[
             {
-              flexDirection: "row",
-              alignItems: "center",
+              flexDirection: 'row',
+              alignItems: 'center',
               borderWidth: 1,
-              borderColor: disabled ? paletts.GRAY100 : error ? "#ff4d4f" : focused ? paletts.PURPLE600 :paletts.GRAY100,
+              borderColor: disabled
+                ? paletts.GRAY100
+                : error
+                ? '#ff4d4f'
+                : focused
+                ? paletts.PURPLE600
+                : paletts.GRAY100,
               borderRadius: 8,
               paddingHorizontal: 10,
-              backgroundColor: disabled ? paletts.GRAY50 : "white",
+              backgroundColor: disabled ? paletts.GRAY50 : 'white',
               height: 46,
             },
           ]}
@@ -60,10 +91,10 @@ export const AppTextInput = forwardRef<TextInput, InputProps>(
             </TouchableOpacity>
           )}
 
-          <TextInput
+          <InputComponent
             ref={ref}
             editable={!disabled}
-            style={[{ flex: 1, color: "#000" }, inputStyle]}
+            style={[{ flex: 1, color: '#000' }, inputStyle]}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             placeholderTextColor="#999"
@@ -84,16 +115,16 @@ export const AppTextInput = forwardRef<TextInput, InputProps>(
         {!hideErrorSpace && (
           <Text
             style={{
-              color: "#ff4d4f",
+              color: '#ff4d4f',
               fontSize: 12,
               marginTop: 4,
               opacity: error ? 1 : 0,
             }}
           >
-            {error || "placeholder"}
+            {error || 'placeholder'}
           </Text>
         )}
       </View>
     );
-  }
+  },
 );
