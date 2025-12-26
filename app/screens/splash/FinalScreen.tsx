@@ -1,17 +1,12 @@
 import TodayTask from "@assets/images/TodayTask.svg";
 import WorkingPeriod from "@assets/images/WorkingPeriod.svg";
 import CustomBottomSheet from "@components/CustomBottomSheet";
-import EyeIcon from "@components/icons/EyeIcon";
-import EyeOffIcon from "@components/icons/EyeOffIcon";
-import MailIcon from "@components/icons/MailIcon";
 import PhoneCallIcon from "@components/icons/PhoneCallIcon";
-import ScanIcon from "@components/icons/ScanIcon";
 import Screen from "@components/Screen";
 import { AppTextInput } from "@components/ui/AppTextInput";
 import { Button } from "@components/ui/Button";
-import CheckBox from "@components/ui/CheckBox";
-import Divider from "@components/ui/Divider";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import SignIn from "@screens/auth/SignIn";
 import { paletts } from "@styles/paletts";
 import { typography } from "@styles/typography";
 import { AnimatedIn } from "@utils/animation";
@@ -27,26 +22,143 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+const OTP_LENGTH = 6;
+const RESEND_SECONDS = 30;
+
 const FinalScreen = () => {
-  const [isPassowrdSecure, setIsPasswordSecure] = React.useState(false);
-  const [isRememberMe, setIsRememberMe] = React.useState(false);
-  const [isLoginWithPhone, setIsLoginWithPhone] = React.useState(false);
+  const [otp, setOtp] = React.useState<string[]>(Array(OTP_LENGTH).fill(""));
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [resendTimer, setResendTimer] = React.useState(RESEND_SECONDS);
+  const [canResend, setCanResend] = React.useState(false);
 
-  const togglePassword = () => setIsPasswordSecure(prev => !prev);
-  const toggleRememberMe = () => setIsRememberMe(prev => !prev);
-
-  const sheetRef = React.useRef<BottomSheet>(null);
+  const sheetRef = React.useRef<BottomSheet[]>([]);
   const headerVisibility = useSharedValue(0);
+  const inputRefs = React.useRef<Array<any>>([]);
+
+  const setRef = (index: number) => (ref: BottomSheet | null) => {
+    if (ref) sheetRef.current[index] = ref;
+  };
+
+  const closeAllSheet = () => sheetRef?.current?.forEach(ref => ref?.close());
+
+  const closeSheet = (index: number) => sheetRef?.current?.[index]?.close();
+
+  const openSheet = (index: number) => {
+    sheetRef.current.forEach((ref, i) => {
+      if (i !== index) ref?.close();
+    });
+    sheetRef?.current?.[index]?.expand();
+
+    if (index === 1) {
+      startResendTimer();
+    }
+  };
 
   const handleSheetChanges = React.useCallback((index: number) => {
     console.log("handleSheetChanges", index);
   }, []);
 
   const navigateToSignIn = () => {
-    sheetRef?.current?.expand();
+    openSheet(0);
   };
 
   const navigateToSignUp = () => navigate("SignUp");
+
+  const focusInput = (index: number) => {
+    inputRefs.current[index]?.focus();
+  };
+
+  const handleOTPChange = (value: string, index: number) => {
+    if (!value) return;
+
+    // Handle paste (full OTP)
+    if (value.length > 1) {
+      const pasted = value.replace(/\D/g, "").slice(0, OTP_LENGTH);
+      if (pasted.length === OTP_LENGTH) {
+        setOtp(pasted.split(""));
+        inputRefs.current[OTP_LENGTH - 1]?.blur();
+        submitOtp(pasted);
+      }
+      return;
+    }
+
+    // Single digit
+    if (!/^\d$/.test(value)) return;
+
+    const nextOtp = [...otp];
+    nextOtp[index] = value;
+    setOtp(nextOtp);
+
+    if (index < OTP_LENGTH - 1) {
+      focusInput(index + 1);
+    }
+
+    // Auto submit
+    if (nextOtp.every(d => d !== "")) {
+      submitOtp(nextOtp.join(""));
+    }
+  };
+
+  const handleKeyPress = (e: any, index: number) => {
+    if (e.nativeEvent.key === "Backspace") {
+      if (otp[index]) {
+        const nextOtp = [...otp];
+        nextOtp[index] = "";
+        setOtp(nextOtp);
+      } else if (index > 0) {
+        focusInput(index - 1);
+      }
+    }
+  };
+
+  const submitOtp = async (finalOtp: string = otp.join("")) => {
+    const code = finalOtp ?? otp.join("");
+    if (code.length !== OTP_LENGTH) return;
+
+    try {
+      setIsSubmitting(true);
+      console.log("Submitting OTP:", code);
+
+      // 🔥 API call here
+      // await verifyOtp(code)
+
+      // success
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setTimeout(() => {
+        setIsSubmitting(false);
+        closeAllSheet();
+        setOtp(Array(OTP_LENGTH).fill(""));
+      }, 500);
+    }
+  };
+
+  const startResendTimer = () => {
+    setCanResend(false);
+    setResendTimer(RESEND_SECONDS);
+  };
+
+  const handleResendOtp = async () => {
+    if (!canResend) return;
+
+    try {
+      console.log("Resending OTP...");
+
+      // 🔥 call resend OTP API here
+
+      // Reset OTP inputs
+      setOtp(Array(OTP_LENGTH).fill(""));
+      focusInput(0);
+
+      // Restart timer
+      startResendTimer();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const isOtpComplete = otp.every(d => d !== "");
 
   const AnimatedHeader = ({ headerVisibility }: any) => {
     const style = useAnimatedStyle(() => ({
@@ -63,6 +175,19 @@ const FinalScreen = () => {
       </Animated.View>
     );
   };
+
+  React.useEffect(() => {
+    if (resendTimer === 0) {
+      setCanResend(true);
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setResendTimer(prev => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [resendTimer]);
 
   return (
     <Screen edges={["bottom"]}>
@@ -118,131 +243,127 @@ const FinalScreen = () => {
       {/* Sign-In sheet */}
       <CustomBottomSheet
         enablePanDownToClose
-        ref={sheetRef}
+        ref={setRef(0)}
         onChange={handleSheetChanges}
         snapPoints={["50%", "65%"]}
+        handleIndicatorStyle={{ display: "none" }}
+        // enableDynamicSizing={true}
+      >
+        <BottomSheetView style={{ padding: scale(28) }}>
+          <SignIn openSheet={openSheet} />
+        </BottomSheetView>
+      </CustomBottomSheet>
+
+      {/* otp Sheet */}
+      <CustomBottomSheet
+        ref={setRef(1)}
+        snapPoints={["60%"]}
         handleIndicatorStyle={{ display: "none" }}
         enableDynamicSizing={true}
         onAnimate={(from, to) => {
           headerVisibility.value = withTiming(to >= 0 ? 1 : 0, {
             duration: 150,
           });
+
+          if (to === 0) {
+            startResendTimer();
+            focusInput(0);
+          }
         }}
         handleComponent={() => (
           <AnimatedHeader headerVisibility={headerVisibility} />
         )}
       >
-        <BottomSheetView style={{ padding: scale(28) }}>
-          <View style={{ gap: scale(22) }}>
-            <View style={{ gap: scale(24) }}>
-              {/* heading */}
-              <View style={[styles.center]}>
-                <Text style={[typography.h3]}>Sign In</Text>
-                <Text style={[typography.l1]}>Sign in to my account</Text>
-              </View>
-
-              {/* inputs */}
-              <View style={[{ gap: scale(12) }]}>
-                {isLoginWithPhone ? (
-                  <>
-                    <AppTextInput
-                      placeholder="00000 00000"
-                      label="Phone number"
-                      keyboardType="number-pad"
-                      useBottomSheetInput
-                      isRequired
-                      startElement={<Text>+91</Text>}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <AppTextInput
-                      placeholder="My Email or Employee ID"
-                      label="Email"
-                      isRequired
-                      useBottomSheetInput
-                      startElement={
-                        <MailIcon
-                          color={paletts.PURPLE600}
-                          height={scale(20)}
-                          width={scale(20)}
-                        />
-                      }
-                    />
-
-                    <AppTextInput
-                      placeholder="My Password"
-                      label="Password"
-                      isRequired
-                      useBottomSheetInput
-                      startElement={<ScanIcon />}
-                      secureTextEntry={isPassowrdSecure}
-                      endElement={
-                        <TouchableOpacity onPress={togglePassword}>
-                          {isPassowrdSecure ? <EyeIcon /> : <EyeOffIcon />}
-                        </TouchableOpacity>
-                      }
-                    />
-                  </>
-                )}
-
-                <View style={[styles.flexRow]}>
-                  <View
-                    style={[
-                      styles.flexRow,
-                      { justifyContent: "flex-start", gap: scale(6) },
-                    ]}
-                  >
-                    <CheckBox
-                      check={isRememberMe}
-                      onPress={() => toggleRememberMe()}
-                    />
-                    <Text style={[typography.b3]}>Remember Me</Text>
-                  </View>
-                  <TouchableOpacity>
-                    <Text style={[typography.b3, { color: paletts.PURPLE600 }]}>
-                      Forgot Password
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
+        <BottomSheetView>
+          <View style={{ gap: scale(24), padding: scale(32) }}>
+            {/* heading */}
+            <View style={[styles.center]}>
+              <Text style={[typography.h3]}>Sign In Phone Number</Text>
+            </View>
+            <View style={[styles.center]}>
+              <Text style={[typography.l1]}>
+                Sign in code has been sent to{" "}
+                <Text style={{ fontWeight: "bold" }}> +91 00000 00000</Text>,
+                check your inbox to continue the sign in process.
+              </Text>
             </View>
 
-            <View style={{ gap: scale(32) }}>
-              <Button
-                title="Sign In"
-                containerStyle={{ paddingVertical: scale(14) }}
-              />
+            {/* inputs */}
+            <View
+              style={[
+                styles.flexRow,
+                { gap: scale(6), alignItems: "flex-start" },
+              ]}
+            >
+              {otp?.map((digit, index) => (
+                <AppTextInput
+                  key={index}
+                  ref={ref => (inputRefs.current[index] = ref)}
+                  mainContainerStyle={{ flex: 1, height: scale(50) }}
+                  containerStyle={{ height: scale(50) }}
+                  keyboardType="number-pad"
+                  useBottomSheetInput
+                  inputStyle={{ fontSize: scale(28), textAlign: "center" }}
+                  placeholder="0"
+                  maxLength={1}
+                  value={digit}
+                  onChangeText={val => handleOTPChange(val, index)}
+                  onKeyPress={e => handleKeyPress(e, index)}
+                  textContentType="oneTimeCode"
+                  autoComplete="sms-otp"
+                  autoFocus={index === 0}
+                />
+              ))}
+            </View>
 
-              <Divider label="OR" />
+            <View style={[styles.center]}>
+              <Text style={[typography.l1]}>
+                Haven't received the code?{" "}
+                <TouchableOpacity>
+                  {/* <Text
+                    style={[{ color: paletts.PURPLE600, fontWeight: "bold" }]}
+                  >
+                    Resend it.
+                  </Text> */}
+                  <View style={[styles.center]}>
+                    {canResend ? (
+                      <TouchableOpacity onPress={handleResendOtp}>
+                        <Text
+                          style={{
+                            color: paletts.PURPLE600,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Resend OTP
+                        </Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <Text style={typography.l1}>
+                        Resend OTP in{" "}
+                        <Text style={{ fontWeight: "bold" }}>
+                          {resendTimer}s
+                        </Text>
+                      </Text>
+                    )}
+                  </View>
+                </TouchableOpacity>
+              </Text>
             </View>
 
             <Button
-              title={`Sign in with ${isLoginWithPhone ? "Email" : "Phone"}`}
-              variant="primaryGhost"
-              onPress={() => setIsLoginWithPhone(prev => !prev)}
-              startIcon={
-                isLoginWithPhone ? (
-                  <MailIcon
-                    color={paletts.WHITE000}
-                    fill={paletts.PURPLE600}
-                    height={scale(24)}
-                    width={scale(24)}
-                  />
-                ) : (
-                  <PhoneCallIcon />
-                )
-              }
-              textStyle={{ color: paletts.PURPLE600 }}
+              title="Submit"
+              containerStyle={{ paddingVertical: scale(14) }}
+              onPress={() => submitOtp()}
+              loading={isSubmitting}
+              disabled={!isOtpComplete}
             />
+
             {/* footer */}
             <View style={[styles.center]}>
               <Text style={[typography.l1]}>
-                Don’t have an account?{" "}
-                <TouchableOpacity>
-                  <Text style={[{ color: paletts.PURPLE600 }]}>
-                    Sign Up Here
-                  </Text>
+                Sign in with different method{" "}
+                <TouchableOpacity onPress={() => openSheet(0)}>
+                  <Text style={[{ color: paletts.PURPLE600 }]}>Here.</Text>
                 </TouchableOpacity>
               </Text>
             </View>

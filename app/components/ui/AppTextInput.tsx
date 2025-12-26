@@ -9,6 +9,7 @@ import {
   TextInputProps,
   TouchableOpacity,
   TextStyle,
+  ViewStyle,
 } from 'react-native';
 
 export interface InputProps extends TextInputProps {
@@ -17,7 +18,7 @@ export interface InputProps extends TextInputProps {
   error?: string;
   hideErrorSpace?: boolean;
   disabled?: boolean;
-  containerStyle?: any;
+  mainContainerStyle?: ViewStyle;
   inputStyle?: any;
   elementStyle?: any;
   label?: string;
@@ -26,6 +27,7 @@ export interface InputProps extends TextInputProps {
   onStartPress?: () => void;
   onEndPress?: () => void;
   useBottomSheetInput?: boolean;
+  containerStyle?: ViewStyle;
 }
 
 export const AppTextInput = forwardRef<any, InputProps>(
@@ -37,6 +39,7 @@ export const AppTextInput = forwardRef<any, InputProps>(
       hideErrorSpace = false,
       disabled = false,
       containerStyle,
+      mainContainerStyle,
       inputStyle,
       elementStyle,
       onStartPress,
@@ -54,7 +57,7 @@ export const AppTextInput = forwardRef<any, InputProps>(
     const InputComponent= useBottomSheetInput ? BottomSheetTextInput : TextInput;
 
     return (
-      <View style={[{ width: '100%', gap: scale(4) }, containerStyle]}>
+      <View style={[{ width: '100%', gap: scale(4) }, mainContainerStyle]}>
         {label && (
           <Text style={[{ color: paletts.GRAY600 }, labelStyle]}>
             {label}{' '}
@@ -79,6 +82,7 @@ export const AppTextInput = forwardRef<any, InputProps>(
               backgroundColor: disabled ? paletts.GRAY50 : 'white',
               height: 46,
             },
+            containerStyle
           ]}
         >
           {startElement && (
