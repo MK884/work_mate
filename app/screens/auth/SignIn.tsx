@@ -103,7 +103,7 @@ const SignIn = ({ openSheet }: { openSheet: (index: number) => void }) => {
               />
               <Text style={[typography.b3]}>Remember Me</Text>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => openSheet(2)}>
               <Text style={[typography.b3, { color: paletts.PURPLE600 }]}>
                 Forgot Password
               </Text>

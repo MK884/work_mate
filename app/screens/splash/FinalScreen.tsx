@@ -2,10 +2,12 @@ import TodayTask from "@assets/images/TodayTask.svg";
 import WorkingPeriod from "@assets/images/WorkingPeriod.svg";
 import CustomBottomSheet from "@components/CustomBottomSheet";
 import PhoneCallIcon from "@components/icons/PhoneCallIcon";
+import ShieldLockIcon from "@components/icons/ShieldLockIcon";
 import Screen from "@components/Screen";
 import { AppTextInput } from "@components/ui/AppTextInput";
 import { Button } from "@components/ui/Button";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import ForgotPassword from "@screens/auth/ForgotPassword";
 import SignIn from "@screens/auth/SignIn";
 import { paletts } from "@styles/paletts";
 import { typography } from "@styles/typography";
@@ -160,7 +162,7 @@ const FinalScreen = () => {
 
   const isOtpComplete = otp.every(d => d !== "");
 
-  const AnimatedHeader = ({ headerVisibility }: any) => {
+  const AnimatedHeader = ({ headerVisibility, Icon }: any) => {
     const style = useAnimatedStyle(() => ({
       opacity: headerVisibility.value,
       transform: [
@@ -171,7 +173,11 @@ const FinalScreen = () => {
 
     return (
       <Animated.View style={[styles.sheetHeaderComp, style]}>
-        <PhoneCallIcon color="white" height={scale(60)} width={scale(60)} />
+        {Icon ? (
+          Icon
+        ) : (
+          <PhoneCallIcon color="white" height={scale(60)} width={scale(60)} />
+        )}
       </Animated.View>
     );
   };
@@ -320,11 +326,6 @@ const FinalScreen = () => {
               <Text style={[typography.l1]}>
                 Haven't received the code?{" "}
                 <TouchableOpacity>
-                  {/* <Text
-                    style={[{ color: paletts.PURPLE600, fontWeight: "bold" }]}
-                  >
-                    Resend it.
-                  </Text> */}
                   <View style={[styles.center]}>
                     {canResend ? (
                       <TouchableOpacity onPress={handleResendOtp}>
@@ -368,6 +369,30 @@ const FinalScreen = () => {
               </Text>
             </View>
           </View>
+        </BottomSheetView>
+      </CustomBottomSheet>
+
+      {/* forgot password sheet */}
+      <CustomBottomSheet
+        ref={setRef(2)}
+        snapPoints={["50%"]}
+        handleIndicatorStyle={{ display: "none" }}
+        enableDynamicSizing={true}
+        onAnimate={(from, to) => {
+          headerVisibility.value = withTiming(to >= 0 ? 1 : 0, {
+            duration: 150,
+          });
+        }}
+        handleComponent={() => (
+          <AnimatedHeader
+            headerVisibility={headerVisibility}
+            Icon={<ShieldLockIcon height={scale(50)} width={scale(50)} />}
+          />
+        )}
+        enablePanDownToClose
+      >
+        <BottomSheetView>
+          <ForgotPassword openSheet={openSheet} />
         </BottomSheetView>
       </CustomBottomSheet>
     </Screen>
