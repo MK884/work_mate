@@ -1,28 +1,18 @@
-import React from "react";
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  Pressable,
-  Platform,
-  Text,
-  TouchableOpacity,
-} from "react-native";
-import { BlurView } from "@react-native-community/blur";
-import { useNavigation } from "@react-navigation/native";
-import { goBack } from "@utils/navigation";
-import { scale } from "@utils/scale";
-import { typography } from "@styles/typography";
-import { AppTextInput } from "@components/ui/AppTextInput";
-import MailIcon from "@components/icons/MailIcon";
-import { paletts } from "@styles/paletts";
-import ScanIcon from "@components/icons/ScanIcon";
 import EyeIcon from "@components/icons/EyeIcon";
 import EyeOffIcon from "@components/icons/EyeOffIcon";
-import CheckBox from "@components/ui/CheckBox";
-import { Button } from "@components/ui/Button";
-import Divider from "@components/ui/Divider";
+import MailIcon from "@components/icons/MailIcon";
 import PhoneCallIcon from "@components/icons/PhoneCallIcon";
+import ScanIcon from "@components/icons/ScanIcon";
+import { AppTextInput } from "@components/ui/AppTextInput";
+import { Button } from "@components/ui/Button";
+import CheckBox from "@components/ui/CheckBox";
+import Divider from "@components/ui/Divider";
+import { appStyles } from "@styles/appStyles";
+import { paletts } from "@styles/paletts";
+import { typography } from "@styles/typography";
+import { scale } from "@utils/scale";
+import React from "react";
+import { Dimensions, Text, TouchableOpacity, View } from "react-native";
 
 const { height } = Dimensions.get("window");
 
@@ -40,7 +30,7 @@ const SignIn = ({ openSheet }: { openSheet: (index: number) => void }) => {
     <View style={{ gap: scale(22) }}>
       <View style={{ gap: scale(24) }}>
         {/* heading */}
-        <View style={[styles.center]}>
+        <View style={[appStyles.center]}>
           <Text style={[typography.h3]}>Sign In</Text>
           <Text style={[typography.l1]}>Sign in to my account</Text>
         </View>
@@ -90,10 +80,10 @@ const SignIn = ({ openSheet }: { openSheet: (index: number) => void }) => {
             </>
           )}
 
-          <View style={[styles.flexRow]}>
+          <View style={[appStyles.flexRow]}>
             <View
               style={[
-                styles.flexRow,
+                appStyles.flexRow,
                 { justifyContent: "flex-start", gap: scale(6) },
               ]}
             >
@@ -146,7 +136,7 @@ const SignIn = ({ openSheet }: { openSheet: (index: number) => void }) => {
         textStyle={{ color: paletts.PURPLE600 }}
       />
       {/* footer */}
-      <View style={[styles.center]}>
+      <View style={[appStyles.center]}>
         <Text style={[typography.l1]}>
           Don’t have an account?{" "}
           <TouchableOpacity>
@@ -159,15 +149,3 @@ const SignIn = ({ openSheet }: { openSheet: (index: number) => void }) => {
 };
 
 export default SignIn;
-
-const styles = StyleSheet.create({
-  center: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  flexRow: {
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row",
-  },
-});

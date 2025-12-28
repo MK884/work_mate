@@ -1,30 +1,30 @@
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { PlatformPressable } from '@react-navigation/elements';
-import { useLinkBuilder, useTheme } from '@react-navigation/native';
-import { paletts } from '@styles/paletts';
-import { scale } from '@utils/scale';
-import { StyleSheet, View } from 'react-native';
-import { CalendarIcon } from './icons/CalendarIcon';
-import { ExpenseIcon } from './icons/ExpenseIcon';
-import { HomeIcon } from './icons/HomeIcon';
-import { LeaveIcon } from './icons/LeaveIcon';
-import { TaskIcon } from './icons/TaskIcon';
-
+import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { PlatformPressable } from "@react-navigation/elements";
+import { useLinkBuilder, useTheme } from "@react-navigation/native";
+import { paletts } from "@styles/paletts";
+import { scale } from "@utils/scale";
+import { StyleSheet, View } from "react-native";
+import { CalendarIcon } from "./icons/CalendarIcon";
+import { ExpenseIcon } from "./icons/ExpenseIcon";
+import { HomeIcon } from "./icons/HomeIcon";
+import { LeaveIcon } from "./icons/LeaveIcon";
+import { TaskIcon } from "./icons/TaskIcon";
 
 const getIconByRouteName = (
   routeName: keyof MainTabParamList,
   color: string,
+  isFocused: boolean,
 ) => {
   switch (routeName) {
-    case 'Home':
-      return <HomeIcon color={color} />;
-    case 'Attendance':
-      return <CalendarIcon color={color} />;
-    case 'Expense':
-      return <ExpenseIcon color={color} />;
-    case 'Leave':
+    case "Home":
+      return <HomeIcon color={color} isActive={isFocused} />;
+    case "Attendance":
+      return <CalendarIcon color={color}  isActive={isFocused}/>;
+    case "Expense":
+      return <ExpenseIcon color={color} isActive={isFocused} />;
+    case "Leave":
       return <LeaveIcon color={color} />;
-    case 'Task':
+    case "Task":
       return <TaskIcon color={color} />;
     default:
       return null;
@@ -54,7 +54,7 @@ export function MyTabBar({
 
         const onPress = () => {
           const event = navigation.emit({
-            type: 'tabPress',
+            type: "tabPress",
             target: route.key,
             canPreventDefault: true,
           });
@@ -66,7 +66,7 @@ export function MyTabBar({
 
         const onLongPress = () => {
           navigation.emit({
-            type: 'tabLongPress',
+            type: "tabLongPress",
             target: route.key,
           });
         };
@@ -85,14 +85,17 @@ export function MyTabBar({
               //   { backgroundColor: isFocused ? 'black' : 'transparent' },
             ]}
           >
-            <View style={{
+            <View
+              style={{
                 borderBottomWidth: isFocused ? scale(2) : 0,
                 borderColor: paletts.WHITE000,
-                paddingBottom:scale(8)
-            }}>
+                paddingBottom: scale(8),
+              }}
+            >
               {getIconByRouteName(
                 route.name as keyof MainTabParamList,
-                'white',
+                "white",
+                isFocused,
               )}
             </View>
           </PlatformPressable>
@@ -104,17 +107,17 @@ export function MyTabBar({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: paletts.BLACK000,
-    flexDirection: 'row',
+    backgroundColor: "#1C2020",
+    flexDirection: "row",
     paddingBottom: scale(40),
     paddingTop: scale(20),
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   tabItem: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     maxWidth: scale(70),
   },
 });

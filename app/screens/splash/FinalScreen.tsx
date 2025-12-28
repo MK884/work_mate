@@ -1,5 +1,6 @@
 import TodayTask from "@assets/images/TodayTask.svg";
 import WorkingPeriod from "@assets/images/WorkingPeriod.svg";
+import { AnimatedSheetHeader } from "@components/AnimatedSheetHeader";
 import CustomBottomSheet from "@components/CustomBottomSheet";
 import PhoneCallIcon from "@components/icons/PhoneCallIcon";
 import ShieldLockIcon from "@components/icons/ShieldLockIcon";
@@ -9,6 +10,7 @@ import { Button } from "@components/ui/Button";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import ForgotPassword from "@screens/auth/ForgotPassword";
 import SignIn from "@screens/auth/SignIn";
+import { appStyles } from "@styles/appStyles";
 import { paletts } from "@styles/paletts";
 import { typography } from "@styles/typography";
 import { AnimatedIn } from "@utils/animation";
@@ -162,26 +164,6 @@ const FinalScreen = () => {
 
   const isOtpComplete = otp.every(d => d !== "");
 
-  const AnimatedHeader = ({ headerVisibility, Icon }: any) => {
-    const style = useAnimatedStyle(() => ({
-      opacity: headerVisibility.value,
-      transform: [
-        { translateY: interpolate(headerVisibility.value, [0, 1], [-50, 0]) },
-        { scale: interpolate(headerVisibility.value, [0, 1], [0.9, 1]) },
-      ],
-    }));
-
-    return (
-      <Animated.View style={[styles.sheetHeaderComp, style]}>
-        {Icon ? (
-          Icon
-        ) : (
-          <PhoneCallIcon color="white" height={scale(60)} width={scale(60)} />
-        )}
-      </Animated.View>
-    );
-  };
-
   React.useEffect(() => {
     if (resendTimer === 0) {
       setCanResend(true);
@@ -277,16 +259,16 @@ const FinalScreen = () => {
           }
         }}
         handleComponent={() => (
-          <AnimatedHeader headerVisibility={headerVisibility} />
+          <AnimatedSheetHeader headerVisibility={headerVisibility} />
         )}
       >
         <BottomSheetView>
           <View style={{ gap: scale(24), padding: scale(32) }}>
             {/* heading */}
-            <View style={[styles.center]}>
+            <View style={[appStyles.center]}>
               <Text style={[typography.h3]}>Sign In Phone Number</Text>
             </View>
-            <View style={[styles.center]}>
+            <View style={[appStyles.center]}>
               <Text style={[typography.l1]}>
                 Sign in code has been sent to{" "}
                 <Text style={{ fontWeight: "bold" }}> +91 00000 00000</Text>,
@@ -297,7 +279,7 @@ const FinalScreen = () => {
             {/* inputs */}
             <View
               style={[
-                styles.flexRow,
+                appStyles.flexRow,
                 { gap: scale(6), alignItems: "flex-start" },
               ]}
             >
@@ -322,11 +304,11 @@ const FinalScreen = () => {
               ))}
             </View>
 
-            <View style={[styles.center]}>
+            <View style={[appStyles.center]}>
               <Text style={[typography.l1]}>
                 Haven't received the code?{" "}
                 <TouchableOpacity>
-                  <View style={[styles.center]}>
+                  <View style={[appStyles.center]}>
                     {canResend ? (
                       <TouchableOpacity onPress={handleResendOtp}>
                         <Text
@@ -360,7 +342,7 @@ const FinalScreen = () => {
             />
 
             {/* footer */}
-            <View style={[styles.center]}>
+            <View style={[appStyles.center]}>
               <Text style={[typography.l1]}>
                 Sign in with different method{" "}
                 <TouchableOpacity onPress={() => openSheet(0)}>
@@ -384,7 +366,7 @@ const FinalScreen = () => {
           });
         }}
         handleComponent={() => (
-          <AnimatedHeader
+          <AnimatedSheetHeader
             headerVisibility={headerVisibility}
             Icon={<ShieldLockIcon height={scale(50)} width={scale(50)} />}
           />
@@ -426,28 +408,5 @@ const styles = StyleSheet.create({
     gap: scale(12),
     maxWidth: "85%",
     alignSelf: "center",
-  },
-  center: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  flexRow: {
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row",
-  },
-  sheetHeaderComp: {
-    height: 100,
-    aspectRatio: 1,
-    backgroundColor: paletts.PURPLE500,
-    alignSelf: "center",
-    marginTop: -50,
-    borderRadius: scale(16),
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: paletts.PURPLE500,
-    shadowOpacity: 0.4,
-    shadowOffset: { height: 12, width: 0 },
-    shadowRadius: 8,
-  },
+  }
 });

@@ -1,20 +1,20 @@
+import EyeIcon from "@components/icons/EyeIcon";
+import EyeOffIcon from "@components/icons/EyeOffIcon";
+import MailIcon from "@components/icons/MailIcon";
+import ScanIcon from "@components/icons/ScanIcon";
+import { AppTextInput } from "@components/ui/AppTextInput";
+import { Button } from "@components/ui/Button";
+import { appStyles } from "@styles/appStyles";
+import { paletts } from "@styles/paletts";
+import { typography } from "@styles/typography";
+import { scale } from "@utils/scale";
+import React from "react";
 import {
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
-import React from "react";
-import { scale } from "@utils/scale";
-import { typography } from "@styles/typography";
-import { AppTextInput } from "@components/ui/AppTextInput";
-import MailIcon from "@components/icons/MailIcon";
-import { paletts } from "@styles/paletts";
-import { Button } from "@components/ui/Button";
-import ScanIcon from "@components/icons/ScanIcon";
-import EyeIcon from "@components/icons/EyeIcon";
-import EyeOffIcon from "@components/icons/EyeOffIcon";
 
 const OTP_LENGHT = 6;
 const OTP_RESEND_TIME = 30;
@@ -158,10 +158,10 @@ const ForgotPassword = ({
   return (
     <View style={{ gap: scale(24), padding: scale(32) }}>
       {/* heading */}
-      <View style={[styles.center]}>
+      <View style={[appStyles.center]}>
         <Text style={[typography.h3]}>{title}</Text>
       </View>
-      <View style={[styles.center]}>
+      <View style={[appStyles.center]}>
         {passwordCreated ? (
           <Text style={[typography.l1]}>
             To log in to your account, click the Sign in button and enter your
@@ -238,7 +238,7 @@ const ForgotPassword = ({
         <>
           <View
             style={[
-              styles.flexRow,
+              appStyles.flexRow,
               { gap: scale(6), alignItems: "flex-start" },
             ]}
           >
@@ -263,11 +263,11 @@ const ForgotPassword = ({
             ))}
           </View>
 
-          <View style={[styles.center]}>
+          <View style={[appStyles.center]}>
             <Text style={[typography.l1]}>
               Haven't received the code?{" "}
               <TouchableOpacity>
-                <View style={[styles.center]}>
+                <View style={[appStyles.center]}>
                   {canResend ? (
                     <TouchableOpacity onPress={handleResendOtp}>
                       <Text
@@ -324,15 +324,3 @@ const ForgotPassword = ({
 };
 
 export default ForgotPassword;
-
-const styles = StyleSheet.create({
-  center: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  flexRow: {
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row",
-  },
-});

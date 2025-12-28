@@ -29,19 +29,8 @@ const RootNavigation = () => {
             <Stack.Screen name="Notification" component={Notification} />
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen
-              name="SignIn"
-              component={SignIn}
-              options={{
-                presentation: 'transparentModal',
-                animation: 'slide_from_bottom',
-              }}
-            />
-            <Stack.Screen
               name="SignUp"
               component={SignUp}
-              options={{
-                presentation: 'modal',
-              }}
             />
             <Stack.Screen name="FinalScreen" component={FinalScreen} />
             <Stack.Screen name="MainTab" component={BottomTab} />

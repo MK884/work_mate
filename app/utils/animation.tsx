@@ -5,7 +5,7 @@ type Props = {
   children: React.ReactNode;
   delay?: number;
   from?: 'up' | 'left' | 'right';
-  style: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
 };
 
 export const AnimatedIn = ({ children, delay = 0, from = 'up', style }: Props) => {
