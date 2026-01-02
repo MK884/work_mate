@@ -73,7 +73,10 @@ const Home = () => {
           </View>
         </View>
 
-        <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
           {/* work summary */}
           <TouchableOpacity style={[styles.workSummaryPoster]}>
             <View>
