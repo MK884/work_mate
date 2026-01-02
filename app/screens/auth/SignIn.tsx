@@ -10,6 +10,7 @@ import Divider from "@components/ui/Divider";
 import { appStyles } from "@styles/appStyles";
 import { paletts } from "@styles/paletts";
 import { typography } from "@styles/typography";
+import { navigate, replace } from "@utils/navigation";
 import { scale } from "@utils/scale";
 import React from "react";
 import { Dimensions, Text, TouchableOpacity, View } from "react-native";
@@ -108,6 +109,7 @@ const SignIn = ({ openSheet }: { openSheet: (index: number) => void }) => {
           containerStyle={{ paddingVertical: scale(14) }}
           onPress={() => {
             if (isLoginWithPhone) openSheet(1);
+            else replace("MainTab")
           }}
         />
 

@@ -23,9 +23,9 @@ const getIconByRouteName = (
     case "Expense":
       return <ExpenseIcon color={color} isActive={isFocused} />;
     case "Leave":
-      return <LeaveIcon color={color} />;
+      return <LeaveIcon color={color} isActive={isFocused} />;
     case "Task":
-      return <TaskIcon color={color} />;
+      return <TaskIcon color={color} isActive={isFocused}/>;
     default:
       return null;
   }

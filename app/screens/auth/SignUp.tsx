@@ -18,7 +18,7 @@ import { appStyles } from "@styles/appStyles";
 import { paletts } from "@styles/paletts";
 import { typography } from "@styles/typography";
 import { AnimatedIn } from "@utils/animation";
-import { goBack, navigate } from "@utils/navigation";
+import { goBack, navigate, replace } from "@utils/navigation";
 import { scale } from "@utils/scale";
 import React from "react";
 import {
@@ -138,7 +138,7 @@ const SignUp = () => {
       // 🔥 API call here
       // await verifyOtp(code)
 
-      navigate("MainTab", { screen: "Home" });
+      replace("MainTab", { screen: "Home" });
 
       // success
     } catch (err) {
