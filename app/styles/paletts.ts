@@ -62,4 +62,5 @@ export const paletts = {
     WHITE500: '#F0F0F0',
     BLACK000: '#1d232e',
     BLACK100: '#313131',
+    ORANGE400: "#FD824C"
 };

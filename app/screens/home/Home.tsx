@@ -113,7 +113,9 @@ const Home = () => {
               >
                 Today Meeting
               </Text>
-              <Text style={[typography.b3]}>Your schedule for the day</Text>
+              <Text style={[typography.b3, { color: paletts.GRAY300 }]}>
+                Your schedule for the day
+              </Text>
             </View>
 
             <View
@@ -133,7 +135,12 @@ const Home = () => {
                 No Meeting Available
               </Text>
 
-              <Text style={[typography.l3, { textAlign: "center" }]}>
+              <Text
+                style={[
+                  typography.l3,
+                  { textAlign: "center", color: paletts.GRAY300 },
+                ]}
+              >
                 It looks like you don’t have any meetings scheduled at the
                 moment. This space will be updated as new meetings are added!
               </Text>
@@ -151,7 +158,7 @@ const Home = () => {
               >
                 Today Task
               </Text>
-              <Text style={[typography.b3]}>
+              <Text style={[typography.b3, { color: paletts.GRAY300 }]}>
                 The tasks assigned to you for today
               </Text>
             </View>
@@ -173,7 +180,12 @@ const Home = () => {
                 No Tasks Assigned
               </Text>
 
-              <Text style={[typography.l3, { textAlign: "center" }]}>
+              <Text
+                style={[
+                  typography.l3,
+                  { textAlign: "center", color: paletts.GRAY300 },
+                ]}
+              >
                 It looks like you don’t have any tasks assigned to you right
                 now. Don’t worry, this space will be updated as new tasks become
                 available.

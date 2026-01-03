@@ -28,3 +28,9 @@ type MainTabParamList = {
   Expense: undefined;
   Leave: undefined;
 };
+
+type Tab = {
+  label: string;
+  count: number;
+  isDisabled?: boolean;
+};

@@ -1,35 +1,25 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import Screen from "@components/Screen";
-import { paletts } from "@styles/paletts";
-import { scale } from "@utils/scale";
 import ClockIcon from "@assets/images/Clock.svg";
-import { typography } from "@styles/typography";
-import Container from "@components/ui/Container";
-import { Button } from "@components/ui/Button";
-import { appStyles } from "@styles/appStyles";
-import TimerClockIcon from "@components/icons/TimerClockIcon";
 import TaskSkelton from "@assets/images/TaskDocs.svg";
+import { PrimaryHeader } from "@components/PrimaryHeader";
+import Screen from "@components/Screen";
+import SummaryCard from "@components/SummaryCard";
+import { Button } from "@components/ui/Button";
+import Container from "@components/ui/Container";
+import { appStyles } from "@styles/appStyles";
+import { paletts } from "@styles/paletts";
+import { typography } from "@styles/typography";
+import { scale } from "@utils/scale";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 const Attendance = () => {
   return (
     <Screen edges={["left", "right"]}>
-      <View style={styles.topContainer}>
-        <View style={{ gap: scale(6) }}>
-          <Text
-            style={[
-              typography.t2,
-              { fontWeight: "bold", color: paletts.WHITE000 },
-            ]}
-          >
-            Let’s Clock-In!
-          </Text>
-          <Text style={[typography.t3, { color: paletts.WHITE000 }]}>
-            Don’t miss your clock in schedule
-          </Text>
-        </View>
-        <ClockIcon height={scale(120)} width={scale(120)} />
-      </View>
+      <PrimaryHeader
+        Icon={<ClockIcon height={scale(120)} width={scale(120)} />}
+        title="Let’s Clock-In!"
+        subtitle="Don’t miss your clock in schedule"
+      />
 
       <Container
         style={{
@@ -53,46 +43,8 @@ const Attendance = () => {
         </View>
 
         <View style={styles.rowCenter}>
-          <View style={[styles.clockBox]}>
-            <View
-              style={[
-                appStyles.flexRow,
-                { justifyContent: "flex-start", gap: scale(4) },
-              ]}
-            >
-              <TimerClockIcon />
-              <Text
-                style={[typography.l2, { color: paletts.GRAY700 }]}
-                numberOfLines={1}
-              >
-                Today
-              </Text>
-            </View>
-
-            <Text numberOfLines={1} style={[typography.p1]}>
-              00:00 Hrs
-            </Text>
-          </View>
-          <View style={[styles.clockBox]}>
-            <View
-              style={[
-                appStyles.flexRow,
-                { justifyContent: "flex-start", gap: scale(4) },
-              ]}
-            >
-              <TimerClockIcon />
-              <Text
-                style={[typography.l2, { color: paletts.GRAY700 }]}
-                numberOfLines={1}
-              >
-                This Pay Period
-              </Text>
-            </View>
-
-            <Text numberOfLines={1} style={[typography.p1]}>
-              00:00 Hrs
-            </Text>
-          </View>
+          <SummaryCard label="Today" value="00:00 Hrs" />
+          <SummaryCard label="This Pay Period" value="00:00 Hrs" />
         </View>
 
         <Button
@@ -122,7 +74,7 @@ const Attendance = () => {
           >
             Working Period
           </Text>
-          <Text style={[typography.b3]}>
+          <Text style={[typography.b3, { color: paletts.GRAY300 }]}>
             Your working time in this paid period
           </Text>
         </View>
@@ -144,7 +96,12 @@ const Attendance = () => {
             No Working Time Available
           </Text>
 
-          <Text style={[typography.l3, { textAlign: "center" }]}>
+          <Text
+            style={[
+              typography.l3,
+              { textAlign: "center", color: paletts.GRAY300 },
+            ]}
+          >
             It looks like you don’t have any working time in this period. Don’t
             worry, this space will be updated as new working time submitted.
           </Text>
@@ -157,32 +114,11 @@ const Attendance = () => {
 export default Attendance;
 
 const styles = StyleSheet.create({
-  topContainer: {
-    backgroundColor: paletts.PURPLE500,
-    height: scale(233),
-    borderBottomRightRadius: scale(38),
-    borderBottomLeftRadius: scale(38),
-    paddingTop: scale(0),
-    overflow: "hidden",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: scale(16),
-  },
   rowCenter: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: scale(8),
     width: "100%",
-  },
-  clockBox: {
-    flex: 1,
-    gap: scale(10),
-    borderRadius: scale(8),
-    borderWidth: 1,
-    borderColor: paletts.GRAY50,
-    backgroundColor: paletts.WHITE200,
-    padding: scale(16),
   },
 });
